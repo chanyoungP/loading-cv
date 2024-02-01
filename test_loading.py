@@ -1,54 +1,56 @@
+'''
+Test code for loading window content using openCV edge detection algorithm 
+input : original image 
+- edge detection to multiple thresholds -> detected gray scale images
+- transform into gif file 
+output : gif file 
+'''
 import cv2
 import numpy
 import os 
-from datetime import datetime
+import imageio
+
+# TODO : 로버츠(Roberts) 마스크
+# TODO : 프리윗(Prewitt) 마스크
+# TODO : 소벨(Sobel) 마스크
+# TODO : 라플라시안 에지 검출
 
 
-# 로버츠(Roberts) 마스크
-# 프리윗(Prewitt) 마스크
-# 소벨(Sobel) 마스크
-# 라플라시안 에지 검출
-# 캐니 에지 검출 (default)
-# gif max frame 은 200  fps 32로 하고 진행 
-# 영상으로 ,,, ?
 
+##############################
+########### SETTING ##########
+##############################
 
-# Setting 
-
-    ## 이미지 가져오기 
+## Set default path 
 BASE_IMG_PATH = "./images"
-img_name = "human0.png"
 BASE_OUT_PATH  = "./outputs"
 
-    ## timestamp 
-timestamp = datetime.now().strftime("%m%d%H%M%S")
+# your image file name 
+img_name = "human0.png"
 
 
-
-
+##############################
+########### CANNY TEST #######
+##############################
 
 def test_canny():
-    # canny test for image -> image 1 
-    # TODO : 임계값 조절해서 24 fps -> 10 초 240장 
-    # TODO : 240장을 영상으로 만들기 
-    # TODO : 240장을 GIF로 만들기 
 
     # image load
     image = cv2.imread(os.path.join(BASE_IMG_PATH,img_name),cv2.IMREAD_GRAYSCALE)
     if image is None: raise Exception("Image not found error, please check image path")
-    '''
-    (1000,1000)에서 시작 --> 100씩 th1부터 100씩 th2와 번갈아서 100씩 내린다 .(200,200)에서 스탑 
 
-    '''
     cnt = 0
     min_th = 1000 
     max_th = 1000
 
+    vid_frames = []
+#    (1000,1000)에서 시작 --> 100씩 th1부터 100씩 th2와 번갈아서 100씩 내린다 .(200,200)에서 스탑 
     while min_th > 200 or max_th > 200:
     # canny parameters setting
 
         # make image with canny
         canny1 = cv2.Canny(image, threshold1=min_th, threshold2=max_th) # OpenCV 캐니 에지
+        vid_frames.append(canny1)
 
         cnt += 1 
         # 1,2 둘다 1000에서 시작 (900, 1000) -> (900, 900) -> (800,900)
@@ -57,21 +59,34 @@ def test_canny():
         elif cnt % 2 == 0:
             max_th -= 10
 
-        # set output path & image name 
-        result_name = f'output_canny_{cnt}.png'
-        result_path = os.path.join(BASE_OUT_PATH, result_name)
+        # # set output path & image name 
+        # result_name = f'output_canny_{cnt}.png'
+        # result_path = os.path.join(BASE_OUT_PATH, result_name)
 
-        # make output path if path not exists
-        if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
-            os.makedirs(os.path.dirname(BASE_OUT_PATH))
+        # # make output path if path not exists
+        # if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
+        #     os.makedirs(os.path.dirname(BASE_OUT_PATH))
 
-        # save image file 
-        cv2.imwrite(result_path,canny1)
-        print(f"complete saving image{cnt}")
-        print(f"th1 {min_th} th2 {max_th}")
+        # # save image file 
+        # cv2.imwrite(result_path,canny1)
+        # print(f"complete saving image{cnt}")
+        # print(f"th1 {min_th} th2 {max_th}")
 
+    #Set output gif path
+    out_vid_path = os.path.join(BASE_OUT_PATH,img_name.split('.')[0]+'.gif')
 
-    assert os.path.exists(result_path) == True
+    # make output path if path not exists
+    if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
+        os.makedirs(os.path.dirname(BASE_OUT_PATH))
+
+    # saving gif file 
+    print("Saving GIF file")
+    with imageio.get_writer(out_vid_path, mode="I") as writer: # mode : A string containing the modes that this format can handle ('iIvV'),“i” for an image, “I”
+        for frame in vid_frames:
+            writer.append_data(frame) # save frame to gif
+
+        
+    assert os.path.exists(out_vid_path) == True
 
 
 # def test_roberts():
