@@ -52,7 +52,7 @@ def canny_make(image, reduction_rate = 10):
     return vid_frames
 
 
-def make_frames(image, method = 'canny'):
+def make_frames(image, method = "canny"):
     '''
     input : openCV image  (image = cv2.imread())
     output : frame list to make gif
