@@ -14,7 +14,7 @@ import imageio
 # TODO : 프리윗(Prewitt) 마스크
 # TODO : 소벨(Sobel) 마스크
 # TODO : 라플라시안 에지 검출
-
+# TODO : Canny 함수화 
 
 
 ##############################
@@ -87,21 +87,3 @@ def test_canny():
 
         
     assert os.path.exists(out_vid_path) == True
-
-
-# def test_roberts():
-
-
-#     assert True
-
-# def test_sobel():
-
-#     assert 1 
-
-# def test_prewitt():
-
-#     assert 1
-
-# def test_laplacian():
-
-#     assert 1
