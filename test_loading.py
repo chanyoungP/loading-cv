@@ -29,36 +29,47 @@ timestamp = datetime.now().strftime("%m%d%H%M%S")
 
 def test_canny():
     # canny test for image -> image 1 
+    # TODO : 임계값 조절해서 24 fps -> 10 초 240장 
+    # TODO : 240장을 영상으로 만들기 
+    # TODO : 240장을 GIF로 만들기 
     '''
     최소 임계값: 엣지 검출 결과에 영향을 미치는 가장 작은 값입니다. 이 값보다 작은 엣지는 검출되지 않습니다.
+        값이 크면 클 수록 짜잘한 엣지들은 무시가 될거야 
     최대 임계값: 엣지 검출 결과에 영향을 미치는 가장 큰 값입니다. 이 값보다 큰 엣지는 검출되지 않습니다.
+        값이 크면 클수록 엣지가 많이 검출될거야 
+        근데 값이 제일 큰 걸로 했을 때, 가장 적게 검출 
     임계값은 이미지에 따라 다르게 선택될 수 있습니다. 일반적으로는 다음과 같은 범위를 사용합니다:
 
     최소 임계값: 0 ~ 100
-    최대 임계값: 100 ~ 200
+    최대 임계값: 100 ~ 200 # 1000 시작 
     '''
 
     # image load
     image = cv2.imread(os.path.join(BASE_IMG_PATH,img_name),cv2.IMREAD_GRAYSCALE)
     if image is None: raise Exception("Image not found error, please check image path")
+    cnt = 0
 
-    # canny parameters setting 
-    th1 = 0
-    th2 = 0
-    # make image with canny 
-    canny1 = cv2.Canny(image, th1, th2) # OpenCV 캐니 에지
+    for th in range(1000,0,-10):
+        # canny parameters setting
+        max_th = th     # 0~ 200 까지 200장
+        min_th = 400 
 
-    # set output path & image name 
-    result_name = f'output_canny_{timestamp}.png'
-    result_path = os.path.join(BASE_OUT_PATH,result_name)
+        # make image with canny
+        canny1 = cv2.Canny(image, min_th, max_th) # OpenCV 캐니 에지
 
-    # make output path if path not exists
-    if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
-        os.makedirs(os.path.dirname(BASE_OUT_PATH))
+        cnt += 1 
 
-    # save image file 
-    cv2.imwrite(result_path,canny1)
-    print("complete saving image")
+        # set output path & image name 
+        result_name = f'output_canny_{cnt}.png'
+        result_path = os.path.join(BASE_OUT_PATH,result_name)
+
+        # make output path if path not exists
+        if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
+            os.makedirs(os.path.dirname(BASE_OUT_PATH))
+
+        # save image file 
+        cv2.imwrite(result_path,canny1)
+        print(f"complete saving image{cnt}")
 
 
     assert os.path.exists(result_path) == True
