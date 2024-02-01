@@ -32,30 +32,34 @@ def test_canny():
     # TODO : 임계값 조절해서 24 fps -> 10 초 240장 
     # TODO : 240장을 영상으로 만들기 
     # TODO : 240장을 GIF로 만들기 
-    '''
-    (1000,1000)에서 시작 --> 100씩 th1부터 100씩 th2와 번갈아서 100씩 내린다 .(200,200)에서 스탑 
-
-
-    '''
 
     # image load
     image = cv2.imread(os.path.join(BASE_IMG_PATH,img_name),cv2.IMREAD_GRAYSCALE)
     if image is None: raise Exception("Image not found error, please check image path")
-    cnt = 0
+    '''
+    (1000,1000)에서 시작 --> 100씩 th1부터 100씩 th2와 번갈아서 100씩 내린다 .(200,200)에서 스탑 
 
-    for th in range(1000,0,-10):
-        # canny parameters setting
-        max_th = th     # 0~ 200 까지 200장
-        min_th = 400 
+    '''
+    cnt = 0
+    min_th = 1000 
+    max_th = 1000
+
+    while min_th > 200 or max_th > 200:
+    # canny parameters setting
 
         # make image with canny
         canny1 = cv2.Canny(image, threshold1=min_th, threshold2=max_th) # OpenCV 캐니 에지
 
         cnt += 1 
+        # 1,2 둘다 1000에서 시작 (900, 1000) -> (900, 900) -> (800,900)
+        if cnt % 2 == 1: # 홀수번째, th1 감소 
+            min_th -= 10
+        elif cnt % 2 == 0:
+            max_th -= 10
 
         # set output path & image name 
         result_name = f'output_canny_{cnt}.png'
-        result_path = os.path.join(BASE_OUT_PATH,result_name)
+        result_path = os.path.join(BASE_OUT_PATH, result_name)
 
         # make output path if path not exists
         if not os.path.exists(os.path.dirname(BASE_OUT_PATH)):
@@ -64,6 +68,7 @@ def test_canny():
         # save image file 
         cv2.imwrite(result_path,canny1)
         print(f"complete saving image{cnt}")
+        print(f"th1 {min_th} th2 {max_th}")
 
 
     assert os.path.exists(result_path) == True
