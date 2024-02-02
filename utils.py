@@ -16,7 +16,7 @@ def load_img(img_dir):
 
     return image
 
-def canny_make(image, reduction_rate = 10):
+def canny_make(image, reduction_rate = 10, back_ground = "white"):
     '''
     - using canny algorithm, edge detection 
     - input : your image
@@ -41,8 +41,14 @@ def canny_make(image, reduction_rate = 10):
 
         # make image with canny
         canny1 = cv2.Canny(image, threshold1=min_th, threshold2=max_th) # OpenCV canny 
-        vid_frames.append(canny1)
-
+        
+        if back_ground == 'white':
+            canny1_inverted = cv2.bitwise_not(canny1)
+            vid_frames.append(canny1_inverted)
+        elif back_ground == 'black':
+            vid_frames.append(canny1)
+        else:
+            raise ValueError("Wrong input value, there only two input black, white")
         cnt += 1 
         if cnt % 2 == 1: # 홀수번째, th1 감소 
             min_th -= reduction_rate
@@ -58,7 +64,7 @@ def make_frames(image, method = "canny"):
     output : frame list to make gif
     '''
     if method == 'canny':
-        frames = canny_make(image, reduction_rate = 10)
+        frames = canny_make(image, reduction_rate = 10, back_ground='white')
     else:
         print("NOT IMPLEMENT")
 
