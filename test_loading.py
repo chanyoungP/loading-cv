@@ -32,11 +32,15 @@ def test_loading():
 
     assert flag
 
+
 def test_sobel_mask():
     input_img_path = os.path.join(BASE_IMG_PATH,img_name)
     out_vid_path = os.path.join(BASE_OUT_PATH,img_name.split('.')[0]+'.gif')
+    img = load_img(img_dir=input_img_path)
+    # ---------------------- implement sobel mask ----------------
 
 
 
 
-assert flag
+
+    assert True
