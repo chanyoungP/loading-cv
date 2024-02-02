@@ -3,7 +3,7 @@
 import cv2
 import os 
 import imageio
-
+import numpy as np
 
 def load_img(img_dir):
     '''
