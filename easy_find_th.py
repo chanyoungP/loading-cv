@@ -1,3 +1,8 @@
+'''
+Threshold 값을 쉽게 찾기 위해서 openCV 윈도우와 트랙바를 활용하는 코드
+값을 찾기 위한 코드로 실제 서비스에서는 필요하지 않음.
+'''
+
 import cv2
 import numpy as np
 import os 

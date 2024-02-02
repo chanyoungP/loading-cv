@@ -1,4 +1,4 @@
-# Edge detection algorithm : Canny 
+# Edge detection algorithm : Canny, sobel 
 # source file 
 import cv2
 import os 

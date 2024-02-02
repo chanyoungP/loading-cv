@@ -7,13 +7,6 @@ output : gif file
 '''
 from utils import *
 
-# TODO : 로버츠(Roberts) 마스크
-# TODO : 프리윗(Prewitt) 마스크
-# TODO : 소벨(Sobel) 마스크
-# TODO : 라플라시안 에지 검출
-# TODO : Canny 함수화 
-
-
 BASE_IMG_PATH = "./images"
 BASE_OUT_PATH  = "./outputs"
 
