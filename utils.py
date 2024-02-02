@@ -16,6 +16,57 @@ def load_img(img_dir):
 
     return image
 
+def sobel_make(image, growth_rate = 0.01, back_ground = "white"):
+    '''
+    - sobel has one threshold that is a scale parameter 
+    - we set scale parameter's range 0~1 
+    - growth_rate 0.01
+    - we have x-direction , y-direction images so we have 200 images to make gif
+    '''
+    
+    # ------------- setting -----------
+    cnt = 0
+    weight_x = 0
+    weight_y = 0
+    vid_frames = []
+    # ------------- sobel  -----------
+    while weight_x < 1 or weight_y < 1:
+
+    # OpenCV 제공 소벨 에지 계산    
+        # x-direction differentiation - vertical mask
+        dst1 = cv2.Sobel(np.float32(image), cv2.CV_32F, 1, 0, scale=weight_x, ksize = 3)
+        # y-direction differentiation - horizontal mask
+        dst2 = cv2.Sobel(np.float32(image), cv2.CV_32F, 0, 1, scale=weight_y, ksize = 3) 
+        
+        # --> Convert absolute value and uint8 
+        dst1 = cv2.convertScaleAbs(dst1)
+        dst2 = cv2.convertScaleAbs(dst2)
+
+        # combine x-direction, y-direction mask iamge
+        merged_image = cv2.addWeighted(dst1, 0.5, dst2, 0.5, 0)
+        
+        # count image
+        cnt += 1
+        
+        # check back ground color and change 
+        if back_ground == 'white':
+            sobel_inverted = cv2.bitwise_not(merged_image)
+            vid_frames.append(sobel_inverted)
+        elif back_ground == 'black':
+            vid_frames.append(merged_image)
+        else:
+            raise ValueError("Wrong input value, there only two input black, white")
+
+        # threshold change 
+        if cnt % 2 == 1: 
+            weight_x += growth_rate
+        elif cnt % 2 == 0:
+            weight_y += growth_rate
+
+    return vid_frames
+
+
+
 def canny_make(image, reduction_rate = 10, back_ground = "white"):
     '''
     - using canny algorithm, edge detection 
@@ -65,6 +116,9 @@ def make_frames(image, method = "canny"):
     '''
     if method == 'canny':
         frames = canny_make(image, reduction_rate = 10, back_ground='white')
+    
+    elif method == 'sobel':
+        frames = sobel_make(image, growth_rate = 0.01, back_ground = 'white')
     else:
         print("NOT IMPLEMENT")
 
