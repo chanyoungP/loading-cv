@@ -31,3 +31,12 @@ def test_loading():
     flag = save_gif_file(frames = frames, save_dir = out_vid_path)
 
     assert flag
+
+def test_sobel_mask():
+    input_img_path = os.path.join(BASE_IMG_PATH,img_name)
+    out_vid_path = os.path.join(BASE_OUT_PATH,img_name.split('.')[0]+'.gif')
+
+
+
+
+assert flag
